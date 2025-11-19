@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sender — Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root { --bg:#fff; --text:#0f0f0f; --card:#f1f1f1; }
+    [data-tg]{ color:var(--text); background:var(--bg); min-height:100dvh; margin:0;
+      font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    .wrap{ padding:16px;}
+    .card{ background:var(--card); border-radius:14px; padding:16px;}
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    .muted{ opacity:.7; font-size:13px;}
+    .btn{ display:inline-block; padding:10px 14px; border-radius:10px; border:0; cursor:pointer;}
+  </style>
+</head>
+<body data-tg>
+  <div class="wrap">
+    <h2>Sender — Telegram Mini App</h2>
+    <div class="card">
+      <p id="hello" class="muted">Загрузка…</p>
+      <div class="row">
+        <button id="openSite" class="btn">Открыть сайт</button>
+      </div>
+      <p class="muted" id="note">Если вы видите это в браузере — нажмите «Открыть в Telegram» ниже.</p>
+      <div class="row" style="margin-top:8px">
+        <a id="openInTg" class="btn" href="#" rel="noopener">Открыть в Telegram</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Настройки (замени под себя) ===
+    const SITE_URL = "https://sender-screens.amvera.io/ArtemShvedchikov"; // твой сайт
+    const BOT2_USERNAME = "ArtemShvedchikov_bot";        // @username без @
+    // ===================================
+
+    const tg = window.Telegram?.WebApp;
+    const inTg = !!tg;
+
+    function applyTheme(){
+      if(!tg) return;
+      const tp = tg.themeParams || {};
+      const root = document.documentElement;
+      root.style.setProperty('--bg', tp.bg_color || '#fff');
+      root.style.setProperty('--text', tp.text_color || '#0f0f0f');
+      root.style.setProperty('--card', tp.secondary_bg_color || '#f1f1f1');
+    }
+
+    function initTg(){
+      if(!tg) return;
+      tg.ready(); tg.expand(); applyTheme();
+      const u = tg.initDataUnsafe?.user;
+      document.getElementById('hello').textContent = u ?
+        `Привет, ${u.first_name}${u.username ? " (@" + u.username + ")" : ""}!` : "Привет!";
+      try { tg.MainButton.setText("Открыть сайт").show(); } catch {}
+    }
+
+    document.getElementById('openSite').onclick = () => {
+      location.href = SITE_URL + (SITE_URL.includes("?") ? "&" : "?") + "tg=1";
+    };
+
+    const link = document.getElementById('openInTg');
+    if (BOT2_USERNAME && BOT2_USERNAME !== "YourSecondBotUsername") {
+      link.href = "tg://resolve?domain=" + BOT2_USERNAME + "&startapp=home";
+    } else {
+      link.style.display = "none";
+    }
+
+    if (!inTg) {
+      document.getElementById('hello').textContent = "Откройте в Telegram для полноэкранного вида";
+    }
+    initTg();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "dns": { "digTimeoutMs": 1200, "domainCacheTtlMs": 300000 },
+  "mailboxlayer": {
+    "enabled": true,
+    "protocol": "http",
+    "timeoutMs": 5000,
+    "minScore": 0,
+    "block": { "disposable": true, "role": false, "catchAll": false, "lowScore": false },
+    "acceptFree": true
+  }
+}
+
